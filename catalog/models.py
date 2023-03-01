@@ -32,6 +32,23 @@ class Book(models.Model):
         """Returns URL for a detailed book record."""
         return reverse('book-detail', args=[str(self.id)])
 
+    def display_author(self):
+        """For displaying the author(s) in Admin."""
+        authors = []
+        for i in self.author.all():
+            full_name = str(i.last_name) + ', ' + str(i.first_name)
+            authors.append(full_name)
+
+        return '; '.join(i for i in authors)
+
+    display_author.short_description = 'Author(s)'
+
+    def display_genre(self):
+        """For displaying the genre in Admin."""
+        return ', '.join(genre.name for genre in self.genre.all()[:3])
+
+    display_genre.short_description = 'Genre'
+
 class BookInstance(models.Model):
     """Model for a specific physical copy of a book."""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text='Unique ID for this copy')
